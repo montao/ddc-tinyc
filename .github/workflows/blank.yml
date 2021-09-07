@@ -33,7 +33,18 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd tcc-0.9.27
-          ./configure; make; ls -al tcc;date
+          # build tcc with tcc from apt
+          ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-tcc-from-apt
+          make clean
+          # build tcc with gcc
+          ./configure; make; ls -al tcc;cp tcc tcc-built-from-source-with-gcc
+          # patch the system tcc with the tcc we build with the trusted gcc
+          sudo cp tcc /usr/bin/tcc
+          make clean
+          # build tcc with our trusted tcc that we built with trusted gcc
+          ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-trusted-tcc
+          # check the diff if any
+          diff tcc-built-from-source-with-tcc-from-apt tcc-built-from-source-with-trusted-tcc
           echo test, and deploy your project.
           
   
