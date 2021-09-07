@@ -1,0 +1,21 @@
+# This workflow will build a secp256k1 project with Ubuntu
+
+name: Pipeline with secp256k1
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download tonycc
+      run: sudo apt-get install -y wget;wget http://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27.tar.bz2; tar xjvf tcc-0.9.27.tar.bz2
+    - name: Configure and make
+      run: cd tcc*; ./configure; make; make test
