@@ -42,7 +42,7 @@ jobs:
           sudo cp tcc /usr/bin/tcc
           make clean
           # build tcc with our trusted tcc that we built with trusted gcc
-          ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-trusted-tcc
+          ./configure --cc="tcc" --includedir="./include"; make; ls -al tcc;cp tcc tcc-built-from-source-with-trusted-tcc
           # check the diff if any
           diff tcc-built-from-source-with-tcc-from-apt tcc-built-from-source-with-trusted-tcc
           echo test, and deploy your project.
