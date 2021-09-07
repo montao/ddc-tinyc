@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: sudo apt-get install -y wget make libc-dev texinfo tcc libtcc-dev;wget http://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27.tar.bz2; tar xjvf tcc-0.9.27.tar.bz2
+        run: sudo apt-get install -y wget gcc make libc-dev texinfo tcc libtcc-dev;wget http://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27.tar.bz2; tar xjvf tcc-0.9.27.tar.bz2
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
@@ -35,11 +35,14 @@ jobs:
           cd tcc-0.9.27
           pwd
           sudo mkdir /usr/local/lib/tcc 
+          # build tcc with gcc to create the libtcc1.a
+          ./configure; make
           sudo cp libtcc1.a /usr/local/lib/tcc/libtcc1.a
           sudo ls /usr/local/lib/tcc/libt*
           sudo ln -s /home/runner/work/buildtinycc/buildtinycc/tcc-0.9.27/include/stdarg.h /usr/include/stdarg.h
           sudo ln -s /home/runner/work/buildtinycc/buildtinycc/tcc-0.9.27/include/stddef.h /usr/include/stddef.h
           # build tcc with tcc from apt
+          make clean
           ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-tcc-from-apt
           make clean
           # build tcc with gcc
