@@ -33,6 +33,10 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd tcc-0.9.27
+          mkdir /usr/local/lib/tcc 
+          ln -s /usr/lib/aarch64-linux-gnu/tcc/libtcc1.a /usr/local/lib/tcc/libtcc1.a
+          ln -s /tcc-0.9.27/include/stdarg.h /usr/include/stdarg.h
+          ln -s /tcc-0.9.27/include/stddef.h /usr/include/stddef.h
           # build tcc with tcc from apt
           ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-tcc-from-apt
           make clean
