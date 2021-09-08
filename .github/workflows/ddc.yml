@@ -40,8 +40,8 @@ jobs:
           # copy the files to the system needed to self-generate tcc
           sudo cp libtcc1.a /usr/local/lib/tcc/libtcc1.a
           sudo ls /usr/local/lib/tcc/libt*
-          sudo ln -s /home/runner/work/buildtinycc/buildtinycc/tcc-0.9.27/include/stdarg.h /usr/include/stdarg.h
-          sudo ln -s /home/runner/work/buildtinycc/buildtinycc/tcc-0.9.27/include/stddef.h /usr/include/stddef.h
+          sudo ln -s /home/runner/work/ddc-tinyc/ddc-tinyc/tcc-0.9.27/include/stdarg.h /usr/include/stdarg.h
+          sudo ln -s /home/runner/work/ddc-tinyc/ddc-tinyc/tcc-0.9.27/include/stddef.h /usr/include/stddef.h
           make clean
           # build tcc with the tcc from apt (in /usr/bin/tcc)
           ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-tcc-from-apt
