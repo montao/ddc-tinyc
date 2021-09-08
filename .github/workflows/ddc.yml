@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+
+name: DDC
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "ddc"
+  ddc:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: sudo apt-get install -y wget gcc make libc-dev texinfo tcc libtcc-dev;wget http://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27.tar.bz2; tar xjvf tcc-0.9.27.tar.bz2
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          cd tcc-0.9.27
+          pwd
+          sudo mkdir /usr/local/lib/tcc 
+          # bootstrap tcc: build it with gcc to create the libtcc1.a
+          ./configure; make
+          # copy the files to the system needed to self-generate tcc
+          sudo cp libtcc1.a /usr/local/lib/tcc/libtcc1.a
+          sudo ls /usr/local/lib/tcc/libt*
+          sudo ln -s /home/runner/work/buildtinycc/buildtinycc/tcc-0.9.27/include/stdarg.h /usr/include/stdarg.h
+          sudo ln -s /home/runner/work/buildtinycc/buildtinycc/tcc-0.9.27/include/stddef.h /usr/include/stddef.h
+          make clean
+          # build tcc with the tcc from apt (in /usr/bin/tcc)
+          ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-tcc-from-apt
+          make clean
+          # build tcc with the trusted compiler gcc
+          ./configure --cc="gcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-gcc
+          # patch the system tcc with the tcc we built with the trusted gcc
+          sudo cp tcc /usr/bin/tcc
+          make clean
+          # build tcc with our trusted tcc that we built with trusted gcc
+          ./configure --cc="tcc"; make; ls -al tcc;cp tcc tcc-built-from-source-with-trusted-tcc
+          echo check the diff if any
+          diff tcc-built-from-source-with-tcc-from-apt tcc-built-from-source-with-trusted-tcc
+          echo done
+          
+  
